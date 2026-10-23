@@ -1,4 +1,5 @@
 import { useOptimistic, useState, useTransition } from 'react';
+import { toast } from 'sonner';
 
 interface Comment {
   id: number;
@@ -9,38 +10,50 @@ interface Comment {
 let lastId = 2;
 
 export const InstagromApp = () => {
-    const [isPending, startTransition] = useTransition();
-	
-	const [comments, setComments] = useState<Comment[]>([
-        { id: 1, text: '¡Gran foto!' },
-        { id: 2, text: 'Me encanta 🧡' },
-    ]);
+  const [isPending, startTransition] = useTransition();
 
-    const [optimisticComments, addOptimisticComment] = useOptimistic(
-        comments, 
-        (currentComments, newCommentText: string) => {
-            lastId++;
-            return [...currentComments, {id: lastId, text: newCommentText, optimistic: true}]
+  const [comments, setComments] = useState<Comment[]>([
+    { id: 1, text: '¡Gran foto!' },
+    { id: 2, text: 'Me encanta 🧡' },
+  ]);
+
+  const [optimisticComments, addOptimisticComment] = useOptimistic(
+    comments,
+    (currentComments, newCommentText: string) => {
+      lastId++;
+      return [...currentComments, { id: lastId, text: newCommentText, optimistic: true }]
+    }
+  );
+
+  const handleAddComment = async (formData: FormData) => {
+    const messageText = formData.get('post-message') as string;
+
+    addOptimisticComment(messageText);
+
+    startTransition(async () => {
+      await new Promise(resolve => setTimeout(resolve, 3000));
+
+      // setComments((prev) => [
+      // 	...prev, 
+      // 	{
+      // 		id: new Date().getTime(),
+      // 		text: messageText,
+      // 	},
+      // ]);
+
+      // Revertir proceso
+      setComments(prev => prev);
+      toast('Error al agregar el comentario', {
+        description: 'Intente nuevamente',
+        duration: 10_000,
+        position: 'top-right',
+        action: {
+          label: 'Cerrar',
+          onClick: () => toast.dismiss(),
         }
-    );
-
-	const handleAddComment = async (formData: FormData) => {
-		const messageText = formData.get('post-message') as string;
-
-		addOptimisticComment(messageText);
-
-		startTransition(async () => {
-			await new Promise(resolve => setTimeout(resolve, 3000));
-
-			setComments((prev) => [
-				...prev, 
-				{
-					id: new Date().getTime(),
-					text: messageText,
-				},
-			]);
-		})
-	};
+      })
+    })
+  };
 
   return (
     <div className="bg-slate-700 h-screen flex flex-col items-center justify-center">
