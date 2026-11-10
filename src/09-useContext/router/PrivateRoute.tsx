@@ -8,13 +8,13 @@ interface Props {
 }
 
 export const PrivateRoute = ({ element }: Props) => {
-    const { authStatus } = use(UserContext);
+    const { isAuthenticated, isChecking } = use(UserContext);
 
-    if (authStatus === 'checking') {
+    if (isChecking) {
         return null;
     }
 
-    if (authStatus === 'authenticated') {
+    if (isAuthenticated) {
         return element;
     }
 
