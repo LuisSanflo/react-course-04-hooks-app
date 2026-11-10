@@ -1,10 +1,11 @@
-import { StrictMode, Suspense } from 'react'
+import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 
 import { Toaster } from 'sonner';
-import { ClientInformation } from './08-use-suspense/ClientInformation';
-import { getUserAction } from './08-use-suspense/api/get-user.action';
+// import { ClientInformation } from './08-use-suspense/ClientInformation';
+// import { getUserAction } from './08-use-suspense/api/get-user.action';
+import { ProfessionalApp } from './09-useContext/ProfessionalApp';
 
 // import { HooksApp } from './HooksApp'
 // import { TrafficLight } from './01-useState/TrafficLight'
@@ -34,7 +35,7 @@ createRoot(document.getElementById('root')!).render(
     {/* {<MemoCounter />} */}
     {/* {<InstagromApp />} */}
 
-    <Suspense
+    {/* <Suspense
       fallback={
         <div className="bg-gradient flex flex-col">
           <h1 className='text-2xl'>Cargando...</h1>
@@ -42,6 +43,7 @@ createRoot(document.getElementById('root')!).render(
       }
     >
       <ClientInformation getUser={getUserAction(1000)}/>
-    </Suspense>
+    </Suspense> */}
+    <ProfessionalApp />
   </StrictMode>,
 )
